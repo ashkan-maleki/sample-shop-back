@@ -42,19 +42,3 @@ class CartSerializer(serializers.ModelSerializer):
         instance.count = validated_data.get('count', instance.count)
         instance.save()
         return instance
-
-#
-#
-# class CartSerializer(serializers.ModelSerializer):
-#     cart_items = models.ManyToManyField('shop.Cart')
-#     user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
-#     payment = models.CharField('پرداخت', max_length=20)
-#
-#
-# class TransactionSerializer(serializers.ModelSerializer):
-#     cart = models.ForeignKey('shop.Cart', on_delete=models.CASCADE)
-#
-#
-# class ProfileSerializer(serializers.ModelSerializer):
-#     user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
-#     address = models.CharField('آدرس', max_length=250)
