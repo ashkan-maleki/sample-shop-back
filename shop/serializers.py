@@ -1,7 +1,7 @@
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
 
-from shop.models import Product, CartItem, Cart
+from shop.models import Product, Profile
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -11,34 +11,24 @@ class ProductSerializer(serializers.ModelSerializer):
         read_only_fields = ['id']
 
 
-# class CartSerializer(serializers.Serializer):
-#     product = serializers.IntegerField()
-#     count = serializers.IntegerField()
+class ProfileSerializer(serializers.ModelSerializer):
 
-class CartSerializer(serializers.ModelSerializer):
     class Meta:
-        model = CartItem
-        fields = ['product', 'count', 'id']
+        model = Profile
+        fields = ['latitude', 'longitude', 'id']
         read_only_fields = ['id']
 
     def create(self, validated_data):
         current_user = validated_data.pop('user')
 
         try:
-            cart = current_user.cart
+            profile = current_user.profile
+            new_profile = Profile(**validated_data)
+            profile.latitude = new_profile.latitude
+            profile.longitude = new_profile.longitude
         except ObjectDoesNotExist:
-            cart = Cart()
-            cart.user = current_user
-            cart.payment = '0'
-            cart.save()
+            profile = Profile.objects.create(**validated_data)
+            profile.user = current_user
+            profile.save()
 
-        cart_item = CartItem(**validated_data)
-        cart_item.cart = cart
-        cart_item.save()
-
-        return CartItem(**validated_data)
-
-    def update(self, instance, validated_data):
-        instance.count = validated_data.get('count', instance.count)
-        instance.save()
-        return instance
+        return profile

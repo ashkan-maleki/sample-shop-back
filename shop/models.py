@@ -11,28 +11,10 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
-
-class Cart(models.Model):
-    user = models.OneToOneField('auth.User', on_delete=models.CASCADE)
-    payment = models.CharField('پرداخت', max_length=20)
+class Profile(models.Model):
+    user = models.OneToOneField('auth.User', on_delete=models.CASCADE, null=True, blank=True)
+    latitude = models.CharField('عرض جغرافیایی', max_length=20, blank=True)
+    longitude = models.CharField('طول جغرافیایی', max_length=20, blank=True)
 
     def __str__(self):
         return self.user.username
-
-
-class CartItem(models.Model):
-    product = models.ForeignKey('shop.Product', on_delete=models.CASCADE)
-    cart = models.ForeignKey('shop.Cart', on_delete=models.CASCADE)
-    count = models.IntegerField('تعداد')
-
-    def __str__(self):
-        return f'{self.product.name} ({self.count})'
-
-
-class Transaction(models.Model):
-    cart = models.ForeignKey('shop.Cart', on_delete=models.CASCADE)
-
-
-class Profile(models.Model):
-    user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
-    address = models.CharField('آدرس', max_length=250)
